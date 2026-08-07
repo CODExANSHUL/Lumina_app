@@ -40,15 +40,32 @@ app = FastAPI(
 # ======================================================
 # CORS
 # ======================================================
+# Vercel gives every deploy (production + each preview) its own unique
+# URL, e.g. https://lumina-g9ylfloot-lumina-1e0f.vercel.app. Hardcoding
+# one of those means CORS breaks the moment you redeploy the frontend.
+#
+# Fix:
+#   1. Always allow localhost (dev) explicitly.
+#   2. Allow any extra origins (your real production domain, custom
+#      domain, etc) via the ALLOWED_ORIGINS env var on Render - comma
+#      separated, no trailing slashes.
+#   3. Match ANY Vercel preview/production URL for this project via
+#      regex, so you never have to touch this file again after a deploy.
 
 origins = [
     "http://localhost:5173",
-    "https://lumina-g9ylfloot-lumina-1e0f.vercel.app",
+    "http://localhost:3000",
+    *settings.cors_origins,
 ]
+
+# Matches https://lumina-<anything>-lumina-1e0f.vercel.app
+# (covers production + every preview deployment for this Vercel project)
+VERCEL_PREVIEW_REGEX = r"^https://lumina(-[a-z0-9]+)*-lumina-1e0f\.vercel\.app$"
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_origin_regex=VERCEL_PREVIEW_REGEX,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
