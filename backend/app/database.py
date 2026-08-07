@@ -32,7 +32,7 @@ engine = create_engine(
 
     pool_pre_ping=True,
 
-    future=True
+    future=True,
 
     connect_args={
         "prepare_threshold": None
