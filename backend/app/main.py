@@ -54,8 +54,7 @@ app = FastAPI(
 
 origins = [
     "http://localhost:5173",
-    "http://localhost:3000",
-    *settings.cors_origins,
+    "https://lumina-g9ylfloot-lumina-1e0f.vercel.app",
 ]
 
 # Matches https://lumina-<anything>-lumina-1e0f.vercel.app
