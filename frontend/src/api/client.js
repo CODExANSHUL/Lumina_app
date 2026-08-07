@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useAuthStore } from "../store/auth";
 export const API_BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL || "https://lumina-app-cg5b.onrender.com"
+  import.meta.env.VITE_API_BASE_URL || "https://lumina-app-taupe.vercel.app"
 ).replace(/\/$/, "");
 export const api = axios.create({
   baseURL: API_BASE_URL,
