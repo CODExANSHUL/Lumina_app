@@ -43,7 +43,7 @@ app = FastAPI(
 
 origins = [
     "http://localhost:5173",
-    "https://lumina-4wdxt63bh-lumina-1e0f.vercel.app",
+    "https://lumina-g9ylfloot-lumina-1e0f.vercel.app",
 ]
 
 app.add_middleware(
