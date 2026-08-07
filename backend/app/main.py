@@ -1,11 +1,10 @@
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.config import settings
-from app.database import Base, engine
 
 from app.routers.auth import router as auth_router
 from app.routers.admin import router as admin_router
@@ -15,50 +14,69 @@ from app.routers.subscription import router as subscription_router
 from app.routers.upload import router as upload_router
 from app.routers.stream import router as stream_router
 from app.routers import payment
+
 from app.utils.exceptions import http_exception_handler
 
-# Create upload directories if they don't exist
+# ======================================================
+# Create Upload Directories
+# ======================================================
+
 UPLOAD_ROOT = Path("uploads")
-UPLOAD_ROOT.mkdir(exist_ok=True)
+UPLOAD_ROOT.mkdir(parents=True, exist_ok=True)
 
 Path(settings.UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
 Path(settings.PROFILE_PHOTO_DIR).mkdir(parents=True, exist_ok=True)
 
-# Create FastAPI application
+# ======================================================
+# FastAPI App
+# ======================================================
+
 app = FastAPI(
-    title="Video Streaming API",
-    version="1.0.0"
+    title="Lumina Video Streaming API",
+    description="Backend API for Lumina Video Streaming Platform",
+    version="1.0.0",
 )
 
-# Development-only browser origin. Keep production origins explicit and never
-# combine wildcard origins with credentialed requests.
+# ======================================================
+# CORS
+# ======================================================
+
+origins = [
+    "http://localhost:5173",
+    "https://lumina-4wdxt63bh-lumina-1e0f.vercel.app",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "https://lumina-app-cg5b.onrender.com/"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Create database tables
-# Base.metadata.create_all(bind=engine)
+# ======================================================
+# Static Files
+# ======================================================
 
-# Mount uploads folder
 app.mount(
     "/uploads",
     StaticFiles(directory=UPLOAD_ROOT),
     name="uploads",
 )
 
-# Register exception handler
+# ======================================================
+# Exception Handler
+# ======================================================
+
 app.add_exception_handler(
     HTTPException,
     http_exception_handler,
 )
 
-# Register routers
+# ======================================================
+# Routers
+# ======================================================
+
 app.include_router(auth_router)
 app.include_router(admin_router)
 app.include_router(user_router)
@@ -68,9 +86,27 @@ app.include_router(upload_router)
 app.include_router(stream_router)
 app.include_router(payment.router)
 
-# Home endpoint
-@app.get("/")
+# ======================================================
+# Health Check
+# ======================================================
+
+@app.get("/health", tags=["Health"])
+def health():
+    return {
+        "status": "healthy",
+        "service": "Lumina Backend"
+    }
+
+# ======================================================
+# Root Endpoint
+# ======================================================
+
+@app.get("/", tags=["Home"])
 def home():
     return {
-        "message": "Video Streaming API Running"
+        "status": "running",
+        "message": "Welcome to Lumina Video Streaming API",
+        "docs": "/docs",
+        "health": "/health",
+        "version": "1.0.0"
     }
