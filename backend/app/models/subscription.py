@@ -3,6 +3,7 @@ from sqlalchemy import Date
 from sqlalchemy import Enum
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
+from sqlalchemy import Boolean
 from app.database import Base
 
 import enum
@@ -40,4 +41,4 @@ class Subscription(Base):
         Enum(SubscriptionStatus)
     )
 
-    auto_renew = Column(default=False)
+    auto_renew = Column(Boolean, default=False)
