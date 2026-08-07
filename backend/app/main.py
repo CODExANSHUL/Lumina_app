@@ -54,7 +54,7 @@ app = FastAPI(
 
 origins = [
     "http://localhost:5173",
-    "https://lumina-g9ylfloot-lumina-1e0f.vercel.app",
+    "https://lumina-app-taupe.vercel.app",
 ]
 
 # Matches https://lumina-<anything>-lumina-1e0f.vercel.app
