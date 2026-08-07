@@ -34,6 +34,10 @@ engine = create_engine(
 
     future=True
 
+    connect_args={
+        "prepare_threshold": None
+    }
+
 )
 
 SessionLocal = sessionmaker(
